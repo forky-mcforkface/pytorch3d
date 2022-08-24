@@ -49,7 +49,7 @@ def get_extensions():
     source_cuda = glob.glob(os.path.join(extensions_dir, "**", "*.cu"), recursive=True)
     extension = CppExtension
 
-    extra_compile_args = {"cxx": []}
+    extra_compile_args = {"cxx": ["-std=c++17"]}
     define_macros = []
     include_dirs = [extensions_dir]
 
@@ -77,7 +77,9 @@ def get_extensions():
             prefix = os.environ.get("CONDA_PREFIX", None)
             if prefix is not None and os.path.isdir(prefix + "/include/cub"):
                 cub_home = prefix + "/include"
-
+                
+        if os.name != "nt":
+            nvcc_args.append("-std=c++17")
         if cub_home is None:
             warnings.warn(
                 "The environment variable `CUB_HOME` was not found. "
